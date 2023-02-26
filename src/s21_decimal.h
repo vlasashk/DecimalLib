@@ -8,8 +8,12 @@
 #include <string.h>
 
 typedef struct {
-  int bits[4];
+  unsigned int bits[4];
 } s21_decimal;
+
+typedef struct {
+  unsigned int bits[7];
+} big_decimal;
 
 // Arithmetic
 int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
@@ -38,12 +42,73 @@ int s21_round(s21_decimal value, s21_decimal *result);
 int s21_truncate(s21_decimal value, s21_decimal *result);
 int s21_negate(s21_decimal value, s21_decimal *result);
 
-// Helpers
-int getBit(s21_decimal dst, int index);
-int getScale(s21_decimal src);
-int getSign(s21_decimal src);
-void setBit(s21_decimal *value, int index, int set);
-void setScale(s21_decimal *value, int scale);
-void setSign(s21_decimal *value, int sign);
+// Helpers get/set
+int get_bit(s21_decimal dst, int index);
+int get_scale(s21_decimal src);
+int get_sign(s21_decimal src);
+void set_bit(s21_decimal *value, int index, int set);
+void set_scale(s21_decimal *value, int scale);
+void set_sign(s21_decimal *value, int sign);
 
-#endif // SRC_S21_DECIMAL_H_
+// General helpers
+void init_decimal(s21_decimal *dst);
+void copy_decimal(s21_decimal src, s21_decimal *dst);
+int check_if_zero(s21_decimal value);
+
+// Compare helpers
+int big_compare_bits(big_decimal value_1, big_decimal value_2);
+
+// Arithmetic helpers
+void inf_check(int *res, int sign, int index, int sum);
+void shift_left(s21_decimal *value);
+void shift_right(s21_decimal *value);
+void shift_betwen_val_left(s21_decimal *value1, s21_decimal *value2);
+void shift_betwen_val_right(s21_decimal *value1, s21_decimal *value2);
+void simple_div(s21_decimal *value_1, s21_decimal value_2, s21_decimal *reg_a);
+int div_by_10(s21_decimal *value);
+int simple_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
+/*
+ --------------------------------
+|         BIG FUNCTIONS          |
+ --------------------------------
+*/
+// Helpers get/set
+int big_get_bit(big_decimal src, int index);
+int big_get_scale(big_decimal src);
+int big_get_sign(big_decimal src);
+void big_set_bit(big_decimal *value, int index, int set);
+void big_set_scale(big_decimal *value, int scale);
+void big_set_sign(big_decimal *value, int sign);
+
+// General helpers
+void big_init_decimal(big_decimal *dst);
+void convert_to_big(s21_decimal value, big_decimal *result);
+void convert_from_big(big_decimal value, s21_decimal *result);
+int normalize_big(big_decimal *value_1, big_decimal *value_2);
+int big_check_if_zero(big_decimal value);
+int big_negate(big_decimal value, big_decimal *result);
+
+// Arithmetic helpers
+
+void big_copy_decimal(big_decimal src, big_decimal *dst);
+void big_mul_by_10(big_decimal value, big_decimal *result);
+int big_div_by_10(big_decimal *value);
+int simple_big_add(big_decimal value_1, big_decimal value_2,
+                   big_decimal *result);
+void big_convert_complement(big_decimal *value);
+void big_inf_check(int *res, int index, int sum);
+int simple_big_sub(big_decimal value_1, big_decimal value_2,
+                   big_decimal *result);
+
+void big_simple_div(big_decimal *value_1, big_decimal value_2,
+                    big_decimal *reg_a);
+void big_shift_left(big_decimal *value);
+void big_shift_betwen_val_left(big_decimal *value1, big_decimal *value2);
+int squeeze_back_dec(big_decimal value, big_decimal *result, int flag);
+int remove_trailing_zeroes(big_decimal *value);
+int check_if_fit(big_decimal value);
+void bank_rounding(big_decimal *value, int mod_res);
+void big_simple_mul(s21_decimal value_1, s21_decimal value_2,
+                    big_decimal *result);
+
+#endif  // SRC_S21_DECIMAL_H_

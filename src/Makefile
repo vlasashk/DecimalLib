@@ -10,8 +10,9 @@ all: build
 build: test
 
 test: s21_decimal.a
-	$(CC) $(CFLAGS) Tests/*.c s21_decimal.a $(C_LIBS) -o test
+	$(CC) $(CFLAGS) Tests/*.c s21_decimal.a $(TEST_LIBS) -o test
 	./test
+	rm -rf *.o
 
 
 s21_decimal.a: $(OBJECTS)
@@ -37,6 +38,13 @@ rebuild: clean all
 
 valgrind:
 	CK_FORK=no valgrind --trace-children=yes --track-fds=yes --track-origins=yes --leak-check=full --show-leak-kinds=all ./test
+
+clang:
+	cp ../materials/linters/.clang-format ../src/.clang-format
+	cp ../materials/linters/.clang-format ../src/Tests/.clang-format
+	clang-format -style=Google -n *.c *.h
+	clang-format -style=Google -n Tests/*.c Tests/*.h
+	rm .clang-format Tests/.clang-format
 
 clean:
 	rm -rf *.a *.o Tests/*.o test *.a *.gcno *.gcda *.gcov *.info

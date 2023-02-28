@@ -67,6 +67,7 @@ void shift_betwen_val_right(s21_decimal *value1, s21_decimal *value2);
 void simple_div(s21_decimal *value_1, s21_decimal value_2, s21_decimal *reg_a);
 int div_by_10(s21_decimal *value);
 int simple_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
+void mul_by_10(s21_decimal value, s21_decimal *result);
 /*
  --------------------------------
 |         BIG FUNCTIONS          |

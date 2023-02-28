@@ -163,3 +163,20 @@ int div_by_10(s21_decimal *value) {
   }
   return reg_a.bits[0];
 }
+
+void mul_by_10(s21_decimal value, s21_decimal *result) {
+  init_decimal(result);
+  int sign = get_sign(value);
+  int scale = get_scale(value);
+  s21_decimal temp = {0};
+  copy_decimal(value, &temp);
+  temp.bits[3] = 0;
+  shift_left(&temp);
+  s21_add(*result, temp, result);
+  for (int i = 0; i < 2; i++) {
+    shift_left(&temp);
+  }
+  s21_add(*result, temp, result);
+  set_sign(result, sign);
+  set_scale(result, scale);
+}

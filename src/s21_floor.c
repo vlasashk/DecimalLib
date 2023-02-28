@@ -2,19 +2,32 @@
 
 int s21_floor(s21_decimal value, s21_decimal *result) {
   int res = 0;
-  init_decimal(result);
-  s21_decimal one_digit = {{1, 0, 0, 0}};
-  int sign = get_sign(value);
   int scale = get_scale(value);
-  int sum_remainder = 0;
-  for (int i = 0; i < scale; i++) {
-    int last_digit = div_by_10(&value);
-    sum_remainder += last_digit;
-  }
-  set_scale(&value, 0);
-  copy_decimal(value, result);
-  if (sum_remainder > 0 && sign == 1) {
-    s21_sub(value, one_digit, result);
+  if (result && scale < 29) {
+    init_decimal(result);
+    s21_decimal one_digit = {{1, 0, 0, 0}};
+    s21_decimal ten_val = {{1, 0, 0, 0}};
+    s21_decimal reminder = {0};
+    int sign = get_sign(value);
+    if (scale > 0) {
+      for (int i = 0; i < scale; i++) {
+        mul_by_10(ten_val, &ten_val);
+      }
+      if (check_if_zero(value) == 0) {
+        int res_sign = get_sign(value);
+        set_sign(&value, 0);
+        simple_div(&value, ten_val, &reminder);
+        set_sign(&value, res_sign);
+      }
+      set_scale(&value, 0);
+    }
+    set_scale(&value, 0);
+    copy_decimal(value, result);
+    if (check_if_zero(reminder) == 0 && sign == 1) {
+      s21_sub(value, one_digit, result);
+    }
+  } else {
+    res = 1;
   }
   return res;
 }

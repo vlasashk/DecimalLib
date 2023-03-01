@@ -24,7 +24,9 @@ Suite *test_round_suite(void);
 Suite *test_negate_suite(void);
 Suite *test_truncate_suite(void);
 Suite *test_floor_suite(void);
-
-void showBinaryFull(s21_decimal value);
+Suite *test_dec_to_float_suite(void);
+Suite *test_dec_to_int_suite(void);
+Suite *test_int_to_dec_suite(void);
+Suite *test_float_to_dec_suite(void);
 
 #endif  // SRC_TESTS_TEST_H_

@@ -1,7 +1,7 @@
 CC = gcc
 C_LIBS = -lm
 TEST_LIBS = -lpthread -lcheck -lm
-CFLAGS = -std=c11 -Wall -Wextra -Werror 
+CFLAGS = -std=c11 -Wall -Wextra -Werror
 SOURCES = $(wildcard *.c)
 OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
 

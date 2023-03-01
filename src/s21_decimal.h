@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define s21_F_MIN 1E-28
+
 typedef struct {
   unsigned int bits[4];
 } s21_decimal;
@@ -49,6 +51,9 @@ int get_sign(s21_decimal src);
 void set_bit(s21_decimal *value, int index, int set);
 void set_scale(s21_decimal *value, int scale);
 void set_sign(s21_decimal *value, int sign);
+void get_meanful(float *src, int *scale);
+void set_decimal(s21_decimal *dst, float src);
+int get_exp(float src);
 
 // General helpers
 void init_decimal(s21_decimal *dst);

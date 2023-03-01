@@ -87,6 +87,61 @@ int check_if_zero(s21_decimal value) {
 /*
  --------------------------------
 |                                |
+|       Converters helpers       |
+|                                |
+ --------------------------------
+*/
+void get_meanful(float *src, int *scale) {
+  if (*src < 1e7) {
+    while (*src < 1e6 && (*scale) < 28) {
+      int temp = 0;
+      temp = roundf(*src);
+      if (fabsf((*src) - (float)temp) < s21_F_MIN) {
+        *src = (float)temp;
+        break;
+      }
+      (*scale)++;
+      *src *= 10;
+    }
+    float ost = modff(*src, src);
+    if (ost > 0.5) {
+      *src += 1;
+    }
+    while ((int)(*src) % 10 == 0) {
+      (*scale)--;
+      *src /= 10;
+    }
+  } else {
+    while (*src > 1e7 && (*scale) < 29) {
+      *src /= 10;
+      (*scale)--;
+    }
+    *src = roundf(*src);
+  }
+}
+
+void set_decimal(s21_decimal *dst, float src) {
+  unsigned int *temp_float = ((unsigned int *)&src);
+  int exp = get_exp(src);
+  set_bit(dst, exp, 1);
+  exp--;
+  for (unsigned int mask = 0x400000; mask && exp >= 0; mask >>= 1) {
+    if (*temp_float & mask) {
+      set_bit(dst, exp, 1);
+    }
+    exp--;
+  }
+}
+
+int get_exp(float src) {
+  unsigned int *temp = ((unsigned int *)&src);
+  unsigned int mask = 255 << 23;
+  return (int)((*temp & mask) >> 23) - 127;
+}
+
+/*
+ --------------------------------
+|                                |
 |       Arithmetic helpers       |
 |                                |
  --------------------------------
